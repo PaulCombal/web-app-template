@@ -1,0 +1,48 @@
+#!/bin/bash
+
+TMUX_CMD="tmux-non-dead.tmux"
+CLIENT_APP_FOLDER='client'
+SERVER_APP_FOLDER='server'
+DOCKER_RUN_CMD='docker run --name=my_postgres --env=POSTGRES_PASSWORD=testapp123 --volume=my_dbdata:/var/lib/postgresql/data -p 54320:5432 postgres'
+DOCKER_IS_RUNNING_CMD='docker ps | grep my_postgres'
+DOCKER_EXISTS_CMD='docker ps -a | grep my_postgres'
+DOCKER_START_CMD='docker start my_postgres'
+DOCKER_STOP_CMD='docker stop my_postgres'
+SYMFONY_START_CMD='symfony server:start'
+SYMFONY_START_HTTPS_CMD='symfony server:start --p12=../certs/Cert.p12'
+QUASAR_START_PWA_CMD='quasar dev -m pwa'
+QUASAR_START_CAP_CMD='quasar dev -m capacitor -T android'
+BACK_CMD='echo Nothing to execute for backend'
+DOCKER_CMD='echo Nothing to execute for DB'
+FRONT_CMD='echo Nothing to execute for frontend'
+
+if [ "$1" = "stop" ]; then
+  $DOCKER_STOP_CMD
+  exit
+fi
+
+#1: DOCKER
+
+if [ -z "$(eval $DOCKER_EXISTS_CMD)" ]; then
+  # docker does not exist
+  DOCKER_CMD="$DOCKER_RUN_CMD"
+elif [ -z "$(eval $DOCKER_IS_RUNNING_CMD)" ]; then
+  # Docker does not run
+  DOCKER_CMD="$DOCKER_START_CMD"
+fi
+
+#2: BACKEND
+
+# Maybe add https stuff. Fuck it for now
+BACK_CMD="$SYMFONY_START_CMD"
+
+#3: CLIENT
+if [ "$1" = "cap" ]; then
+    FRONT_CMD="$QUASAR_START_CAP_CMD"
+else
+    FRONT_CMD="$QUASAR_START_PWA_CMD"
+fi
+
+#4 launch & stop
+$TMUX_CMD new-session "$DOCKER_CMD && watch docker ps" \; split-window "cd $CLIENT_APP_FOLDER && $FRONT_CMD" \; split-window -h "cd $SERVER_APP_FOLDER && $BACK_CMD" \;
+

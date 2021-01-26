@@ -1,0 +1,17 @@
+{
+  "appId": "com.paul.testapp",
+  "appName": "App Client",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": [
+        "profile",
+        "email"
+      ],
+      "serverClientId": "xxxxxxxxxxxxxxx.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": false
+    }
+  }
+}
