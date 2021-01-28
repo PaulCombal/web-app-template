@@ -35,22 +35,16 @@ export function fresh_login(state) {
     case 'google':
       route = LOGIN_ROUTE_GOOGLE;
       if (!Platform.is.mobile) { // web
-        pchain = new Promise(((resolve, reject) => {
-          window.gapi.load('auth2', () => {
-            if (!window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-              return reject('Cannot fresh_login: Google user is not signed in')
-            }
+        pchain = window.Capacitor.Plugins.GoogleAuth.gapiLoaded.then(() => {
+          if (!window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
+            return Promise.reject('Cannot fresh_login: Google user is not signed in')
+          }
 
-            window.gapi.auth2.getAuthInstance()
-              .currentUser.get().reloadAuthResponse()
-              .then(r => r.id_token)
-              .then(id_token => resolve(id_token))
-
-          }, err => {
-            reject(err)
-          })
-
-        }))
+          // @see Plugin.GoogleAuthWeb.refresh
+          return window.gapi.auth2.getAuthInstance()
+            .currentUser.get().reloadAuthResponse()
+            .then(r => r.id_token)
+        })
       } else {
         // Capacitor
         pchain = Plugins.GoogleAuth.signIn()
@@ -136,7 +130,7 @@ export function logout(state) {
   localStorage.removeItem('user')
   localStorage.removeItem('last_op')
   state.commit('setUser', null)
-  Plugins.GoogleAuth.signOut() // Gotta admit this works on all platforms, https://github.com/CodetrixStudio/CapacitorGoogleAuth/blob/40b999f22a799fcca8ccf4bc4ca716a6de05c419/src/web.ts#L104
+  window.Capacitor.Plugins.GoogleAuth.gapiLoaded.then(()=>Plugins.GoogleAuth.signOut())
   return this.$axios
     .get(LOGOUT_ROUTE_ALL)
     .then(r => r.data)

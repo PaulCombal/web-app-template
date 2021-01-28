@@ -26,7 +26,8 @@ export default {
   mounted() {
     if (!this.$q.platform.is.mobile) {
       // Web version
-      window.gapi.load('auth2', () => {
+      // This is really sad yet effective
+      window.Capacitor.Plugins.GoogleAuth.gapiLoaded.then(()=>{
         window.gapi.auth2.getAuthInstance().attachClickHandler(this.$refs.signinBtn.$el, {}, this.googleUserCb, error => {
           console.error('GoogleButton could not load auth2', error)
         })
