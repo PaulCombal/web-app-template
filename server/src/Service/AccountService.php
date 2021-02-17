@@ -39,10 +39,8 @@ class AccountService
         $new_user = false;
         $op = null;
 
-        // PHP8: str_contains
-        // switch uses the == operator
         switch (true) {
-            case strpos($claims['iss'], 'google'):
+            case str_contains($claims['iss'], 'google'):
                 $op = 'google';
                 $user = $this->em->getRepository(User::class)->findOneBy(['google_sub' => $claims['sub']]) ?? null;
                 if (!$user) {
@@ -52,7 +50,7 @@ class AccountService
                 }
                 break;
 
-            case strpos($claims['iss'], 'apple'):
+            case str_contains($claims['iss'], 'apple'):
                 $op = 'apple';
                 throw new \Exception('Not implemented yet');
                 break;
@@ -98,14 +96,7 @@ class AccountService
          * }
          */
 
-        // This can be converted to a one-liner in PHP8: condition ?? throw Exception
-        if (array_key_exists('email', $claims)) {
-            $user->setEmail($claims['email']);
-        }
-        else {
-            throw new \Exception('No email claim');
-        }
-
+        $user->setEmail($claims['email'] ?? throw new \Exception('No email claim'));
         $user->setGivenName($claims['given_name'] ?? null);
         $user->setFamilyName($claims['family_name'] ?? null);
         $user->setPicture($claims['picture'] ?? null);

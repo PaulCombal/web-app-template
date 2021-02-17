@@ -48,7 +48,7 @@ class OpenIDAuthenticator extends AbstractAuthenticator
                 try {
                     $client = new Google_Client(['client_id' => getenv("GOOGLE_CLIENT_ID")]);  // Specify the CLIENT_ID of the app that accesses the backend
                     $claims = $client->verifyIdToken($apiToken); // false or assoc
-                } catch (\Throwable $e_removewithphp8) {
+                } catch (\Throwable) {
                     throw new CustomUserMessageAuthenticationException('Error validating Google token');
                 }
 
