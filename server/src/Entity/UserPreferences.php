@@ -32,7 +32,7 @@ class UserPreferences
     private $subscribed_newsletter;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="user_preferences", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="userPreferences", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

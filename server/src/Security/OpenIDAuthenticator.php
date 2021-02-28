@@ -61,7 +61,7 @@ class OpenIDAuthenticator extends AbstractAuthenticator
                 }
 
                 return new SelfValidatingPassport(new UserBadge($sub, function ($sub) {
-                    return $this->userRepository->findOneBy(['google_sub' => $sub]);
+                    return $this->userRepository->findOneBy(['googleSub' => $sub]);
                 }));
 
             default:

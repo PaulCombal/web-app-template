@@ -42,7 +42,7 @@ class AccountService
         switch (true) {
             case str_contains($claims['iss'], 'google'):
                 $op = 'google';
-                $user = $this->em->getRepository(User::class)->findOneBy(['google_sub' => $claims['sub']]) ?? null;
+                $user = $this->em->getRepository(User::class)->findOneBy(['googleSub' => $claims['sub']]) ?? null;
                 if (!$user) {
                     $new_user = true;
                     $user = new User();
@@ -65,15 +65,6 @@ class AccountService
         $log = new UserLogin($user, $op);
         $user->addUserLogin($log);
         $this->em->persist($log);
-
-
-        if (!$new_user) {
-            // maybe update a few things from claims idk
-
-            $this->em->flush(); // save the login attempt
-            return false;
-        }
-
 
         /**
          * Example Google $payload
@@ -99,12 +90,16 @@ class AccountService
         $user->setEmail($claims['email'] ?? throw new \Exception('No email claim'));
         $user->setGivenName($claims['given_name'] ?? null);
         $user->setFamilyName($claims['family_name'] ?? null);
+        $user->setFullName($claims['name'] ?? null);
         $user->setPicture($claims['picture'] ?? null);
-        $preferences = new UserPreferences($user);
 
-        $this->em->persist($preferences);
+        if ($new_user) {
+            $preferences = new UserPreferences($user);
+            $this->em->persist($preferences);
+        }
+
         $this->em->persist($user);
         $this->em->flush();
-        return true;
+        return $new_user;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Service\PaginatorService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,9 +15,36 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private $ps;
+    public function __construct(ManagerRegistry $registry, PaginatorService $paginatorService)
     {
         parent::__construct($registry, User::class);
+        $this->ps = $paginatorService;
+    }
+
+    public function rawListing($dql) {
+        return $this
+            ->getEntityManager()
+            ->createQuery($dql)
+            ->setFirstResult($this->ps->from())
+            ->setMaxResults($this->ps->n())
+            ->getResult();
+    }
+
+    public function rawCount($dql) {
+        return $this
+            ->getEntityManager()
+            ->createQuery($dql)
+            ->getSingleScalarResult();
+    }
+
+    // TODO: is there a way to make this in one query using DQL?
+    public function formattedListing($dql = "SELECT u FROM App:User u ORDER BY u.id", $dql_count = "SELECT COUNT(u.id) FROM App:User u") {
+        return [
+            'total' => $this->rawCount($dql_count),
+            'data' => $this->rawListing($dql)
+        ];
     }
 
     // /**

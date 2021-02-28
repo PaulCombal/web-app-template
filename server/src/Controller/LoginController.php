@@ -81,21 +81,19 @@ class LoginController extends AbstractController
         // Let's keep the token in an httpOnly cookie
         $end_date = new \DateTime();
         $end_date->setTimestamp(intval($payload['exp']));
+        $cookie_domain = getenv("COOKIE_DOMAIN");
 
         $iss_cookie = Cookie::create('iss_op')
             ->withValue('google')
             ->withExpires($end_date)
-            ->withDomain('hotspotdev.me')
+            ->withDomain($cookie_domain)
             ->withHttpOnly();
 
         $token_cookie = Cookie::create('id_token')
             ->withValue($id_token)
             ->withExpires($end_date)
-            ->withDomain('hotspotdev.me')
+            ->withDomain($cookie_domain)
             ->withHttpOnly();
-
-
-        //$domain = $payload['hd'];
 
         $user = [
             'email' => $payload['email'],

@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -15,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
     /**
+     * @Groups({"basic", "admin"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -22,31 +25,43 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Groups("admin")
      * @ORM\Column(type="ascii_string", nullable=true, unique=true)
      */
-    private $google_sub;
+    private $googleSub;
 
     /**
+     * @Groups("admin")
      * @ORM\Column(type="ascii_string", nullable=true, unique=true)
      */
-    private $apple_sub;
+    private $appleSub;
 
     /**
+     * @Groups({"private", "admin"})
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
 
     /**
+     * @Groups({"private", "admin"})
      * @ORM\Column(type="string", nullable=true)
      */
-    private $given_name;
+    private $givenName;
 
     /**
+     * @Groups({"private", "admin"})
      * @ORM\Column(type="string", nullable=true)
      */
-    private $family_name;
+    private $familyName;
 
     /**
+     * @Groups({"private", "admin"})
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $fullName;
+
+    /**
+     * @Groups({"private", "admin"})
      * @ORM\Column(type="string", nullable=true)
      */
     private $picture;
@@ -55,29 +70,39 @@ class User implements UserInterface
     // preferences
 
     /**
+     * @Groups("admin")
      * @ORM\Column(type="json")
      */
     private $roles = [];
 
     /**
+     * @Ignore()
      * @ORM\OneToMany(targetEntity=UserLogin::class, mappedBy="user", orphanRemoval=true)
      */
-    private $user_logins;
+    private $userLogins;
 
     /**
+     * @Ignore()
      * @ORM\OneToOne(targetEntity=UserPreferences::class, mappedBy="user", cascade={"persist", "remove"})
      */
-    private $user_preferences;
+    private $userPreferences;
 
     /**
+     * @Ignore()
      * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", orphanRemoval=true)
      */
     private $addresses;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
     public function __construct()
     {
-        $this->user_logins = new ArrayCollection();
+        $this->userLogins = new ArrayCollection();
         $this->addresses = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -156,16 +181,16 @@ class User implements UserInterface
      */
     public function getGoogleSub()
     {
-        return $this->google_sub;
+        return $this->googleSub;
     }
 
     /**
-     * @param mixed $google_sub
+     * @param mixed $googleSub
      * @return User
      */
-    public function setGoogleSub($google_sub)
+    public function setGoogleSub($googleSub)
     {
-        $this->google_sub = $google_sub;
+        $this->googleSub = $googleSub;
         return $this;
     }
 
@@ -174,16 +199,16 @@ class User implements UserInterface
      */
     public function getAppleSub()
     {
-        return $this->apple_sub;
+        return $this->appleSub;
     }
 
     /**
-     * @param mixed $apple_sub
+     * @param mixed $appleSub
      * @return User
      */
-    public function setAppleSub($apple_sub)
+    public function setAppleSub($appleSub)
     {
-        $this->apple_sub = $apple_sub;
+        $this->appleSub = $appleSub;
         return $this;
     }
 
@@ -192,16 +217,16 @@ class User implements UserInterface
      */
     public function getGivenName()
     {
-        return $this->given_name;
+        return $this->givenName;
     }
 
     /**
-     * @param mixed $given_name
+     * @param mixed $givenName
      * @return User
      */
-    public function setGivenName($given_name)
+    public function setGivenName($givenName)
     {
-        $this->given_name = $given_name;
+        $this->givenName = $givenName;
         return $this;
     }
 
@@ -210,7 +235,7 @@ class User implements UserInterface
      */
     public function getFullName()
     {
-        return $this->full_name;
+        return $this->fullName;
     }
 
     /**
@@ -228,16 +253,16 @@ class User implements UserInterface
      */
     public function getFamilyName()
     {
-        return $this->family_name;
+        return $this->familyName;
     }
 
     /**
-     * @param mixed $family_name
+     * @param mixed $familyName
      * @return User
      */
-    public function setFamilyName($family_name)
+    public function setFamilyName($familyName)
     {
-        $this->family_name = $family_name;
+        $this->familyName = $familyName;
         return $this;
     }
 
@@ -264,13 +289,13 @@ class User implements UserInterface
      */
     public function getUserLogins(): Collection
     {
-        return $this->user_logins;
+        return $this->userLogins;
     }
 
     public function addUserLogin(UserLogin $userLogin): self
     {
-        if (!$this->user_logins->contains($userLogin)) {
-            $this->user_logins[] = $userLogin;
+        if (!$this->userLogins->contains($userLogin)) {
+            $this->userLogins[] = $userLogin;
             $userLogin->setUser($this);
         }
 
@@ -279,7 +304,7 @@ class User implements UserInterface
 
     public function removeUserLogin(UserLogin $userLogin): self
     {
-        if ($this->user_logins->removeElement($userLogin)) {
+        if ($this->userLogins->removeElement($userLogin)) {
             // set the owning side to null (unless already changed)
             if ($userLogin->getUser() === $this) {
                 $userLogin->setUser(null);
@@ -291,17 +316,17 @@ class User implements UserInterface
 
     public function getUserPreferences(): ?UserPreferences
     {
-        return $this->user_preferences;
+        return $this->userPreferences;
     }
 
-    public function setUserPreferences(UserPreferences $user_preferences): self
+    public function setUserPreferences(UserPreferences $userPreferences): self
     {
         // set the owning side of the relation if necessary
-        if ($user_preferences->getXxxuser() !== $this) {
-            $user_preferences->setXxxuser($this);
+        if ($userPreferences->getXxxuser() !== $this) {
+            $userPreferences->setXxxuser($this);
         }
 
-        $this->user_preferences = $user_preferences;
+        $this->userPreferences = $userPreferences;
 
         return $this;
     }
@@ -332,6 +357,18 @@ class User implements UserInterface
                 $address->setXxxuser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
