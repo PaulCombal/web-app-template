@@ -21,7 +21,6 @@
 </template>
 
 <script>
-
 import OnlineTable from "components/OnlineTable";
 export default {
   name: 'PageUserListing',
@@ -57,12 +56,24 @@ export default {
           fn: row => alert(row.id),
           icon: 'info',
           tooltip: 'This is a demo'
+        },
+        {
+          type: 'confirm',
+          confirm: {
+            text: 'Are you sure you want to delete this user? There is no going back.'
+          },
+          fn: this.deleteUser,
+          refresh: true,
+          icon: 'delete',
+          tooltip: 'Delete user'
         }
       ]
     }
   },
   methods: {
-
+    deleteUser(row) {
+      return this.$axios.delete(`user/${row.id}`)
+    }
   }
 }
 </script>

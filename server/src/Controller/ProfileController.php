@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileController extends AbstractController
 {
     /**
-     * @Route("/profile", name="my_profile", methods={"OPTIONS", "GET"})
+     * @Route("/profile", name="my_profile", methods={"GET"})
      */
     public function myProfile()
     {

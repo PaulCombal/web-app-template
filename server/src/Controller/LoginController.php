@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LoginController extends AbstractController
 {
     /**
-     * @Route("/logout", name="logout", methods={"GET", "OPTIONS"})
+     * @Route("/logout", name="logout", methods={"GET"})
      */
     public function logout()
     {
@@ -56,7 +56,7 @@ class LoginController extends AbstractController
 
 
     /**
-     * @Route("/login/google/check_token", name="login_check_google", methods={"OPTIONS", "POST"})
+     * @Route("/login/google/check_token", name="login_check_google", methods={"POST"})
      * @param Request $req
      * @param AccountService $accountService
      * @return JsonResponse

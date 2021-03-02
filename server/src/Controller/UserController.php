@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -32,5 +34,17 @@ class UserController extends AbstractController
     public function getListing(UserRepository $userRepository)
     {
         return $this->json($userRepository->formattedListing(), context: ['groups' => ['admin']]);
+    }
+
+    /**
+     * @IsGranted("ROLE_ADMIN")
+     * @Route("/user/{id<\d+>}", name="user_delete", methods={"DELETE"})
+     * @ParamConverter("user", class="App:User")
+     */
+    public function deleteUser(User $user, EntityManagerInterface $em)
+    {
+        $em->remove($user);
+        $em->flush();
+        return $this->json(['message' => 'OK']);
     }
 }

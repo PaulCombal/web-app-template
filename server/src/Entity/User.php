@@ -6,6 +6,8 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\Ignore;
@@ -13,9 +15,12 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 class User implements UserInterface
 {
+    use SoftDeleteableEntity;
+
     /**
      * @Groups({"basic", "admin"})
      * @ORM\Id
@@ -322,8 +327,8 @@ class User implements UserInterface
     public function setUserPreferences(UserPreferences $userPreferences): self
     {
         // set the owning side of the relation if necessary
-        if ($userPreferences->getXxxuser() !== $this) {
-            $userPreferences->setXxxuser($this);
+        if ($userPreferences->getUser() !== $this) {
+            $userPreferences->setUser($this);
         }
 
         $this->userPreferences = $userPreferences;
@@ -343,7 +348,7 @@ class User implements UserInterface
     {
         if (!$this->addresses->contains($address)) {
             $this->addresses[] = $address;
-            $address->setXxxuser($this);
+            $address->setUser($this);
         }
 
         return $this;
@@ -353,8 +358,8 @@ class User implements UserInterface
     {
         if ($this->addresses->removeElement($address)) {
             // set the owning side to null (unless already changed)
-            if ($address->getXxxuser() === $this) {
-                $address->setXxxuser(null);
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
             }
         }
 
