@@ -15,7 +15,11 @@
           Quasar App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <!--<div>Quasar v{{ $q.version }}</div>-->
+        <q-chip square clickable @click="$store.dispatch('auth/logout')">
+          <q-avatar icon="logout"></q-avatar>
+          {{ $store.getters['auth/user'].name }}
+        </q-chip>
       </q-toolbar>
     </q-header>
 

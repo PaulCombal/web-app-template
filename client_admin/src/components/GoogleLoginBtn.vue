@@ -40,13 +40,12 @@ export default {
       if (token.getAuthResponse && token.getAuthResponse().id_token) {
         id_token = token.getAuthResponse().id_token;
       } else if (!(id_token = token.idToken)) { // Capacitor
-        return console.error("No way to extract id token from googleUser", token)
+        return console.error('No way to extract id token from googleUser', token)
       }
 
-      this.$axios.post("login/google/check_token", {id_token})
+      this.$axios.post('login/google/check_token', {id_token})
         .then(r => r.data)
         .then(user => this.$store.dispatch('auth/front_login', {user, op: 'google'}))
-        .then(() => this.$emit('validated'))
         .catch(e => {
           this.$store.dispatch("auth/logout")
           console.error(e)

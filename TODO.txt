@@ -1,4 +1,3 @@
-Use BlankLayout when asking for connection
 Make sure only admins can login to admin frontend, same for owners
 Make users Bannable
 FIX: fullname not saved on account creation?
