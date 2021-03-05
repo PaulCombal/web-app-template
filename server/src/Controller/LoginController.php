@@ -70,6 +70,7 @@ class LoginController extends AbstractController
             return $this->json(['message' => 'missing data'], Response::HTTP_BAD_REQUEST);
         }
 
+        $requested_role = $body['role'] ?? 'ROLE_USER';
         $id_token = $body['id_token'];
 
         $client = new Google_Client(['client_id' => getenv("GOOGLE_CLIENT_ID")]);  // Specify the CLIENT_ID of the app that accesses the backend
@@ -77,7 +78,7 @@ class LoginController extends AbstractController
 
         if (!$payload) return $this->json(['message' => 'bad token'], Response::HTTP_BAD_REQUEST);
 
-        // The user can be trusted now
+        // The token can be trusted now
         // Let's keep the token in an httpOnly cookie
         $end_date = new \DateTime();
         $end_date->setTimestamp(intval($payload['exp']));
@@ -101,7 +102,7 @@ class LoginController extends AbstractController
             'given_name' => $payload['given_name'],
             'family_name' => $payload['family_name'],
             'exp' => $payload['exp'],
-            'new_user' => $accountService->createAccountFromClaims($payload)
+            'new_user' => $accountService->ensureAccountFromClaims($payload, $requested_role)
         ];
 
         $response = new JsonResponse($user);

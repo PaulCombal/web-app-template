@@ -1,5 +1,5 @@
-Make sure only admins can login to admin frontend, same for owners
-Make users Bannable
+Make users Bannable (add role_banned to user mgmt)
 FIX: fullname not saved on account creation?
 
---> LAST: copy everything to client_owner
+--> copy everything to client_owner
+Make sure owner logins with ROLE_OWNER

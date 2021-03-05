@@ -43,7 +43,7 @@ export default {
         return console.error('No way to extract id token from googleUser', token)
       }
 
-      this.$axios.post('login/google/check_token', {id_token})
+      this.$axios.post('login/google/check_token', {id_token, role: 'ROLE_ADMIN'})
         .then(r => r.data)
         .then(user => this.$store.dispatch('auth/front_login', {user, op: 'google'}))
         .catch(e => {

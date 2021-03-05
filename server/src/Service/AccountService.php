@@ -18,14 +18,13 @@ class AccountService
 
     /**
      * @param $claims
+     * @param string $ensure_role
      * @return bool
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
      */
-    public function createAccountFromClaims($claims)
+    public function ensureAccountFromClaims($claims, $ensure_role = 'ROLE_USER')
     {
-        //Let's start with issuer-specific matters
+        // Let's start with issuer-specific matters
 
         if (!array_key_exists('iss', $claims)) {
             throw new \Exception('No iss claim in token');
@@ -57,6 +56,13 @@ class AccountService
 
             default:
                 throw new \Exception('Unknown issuer');
+        }
+
+        /**
+         * If the user want frontend access to something forbidden, just throw him out
+         */
+        if (!in_array($ensure_role, $user->getRoles())) {
+            throw new \Exception('User is not allowed to login with this level of privilege');
         }
 
         /**
