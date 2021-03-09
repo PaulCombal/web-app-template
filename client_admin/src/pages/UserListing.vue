@@ -44,6 +44,24 @@ export default {
           format: val => `${val}`
         },
         {
+          name: 'Firstname',
+          label: 'First name',
+          field: row => row.given_name,
+          format: val => `${val}`
+        },
+        {
+          name: 'Lastname',
+          label: 'Last name',
+          field: row => row.family_name,
+          format: val => `${val}`
+        },
+        {
+          name: 'Fullname',
+          label: 'Full name',
+          field: row => row.full_name,
+          format: val => `${val}`
+        },
+        {
           name: 'Roles',
           label: 'Roles',
           field: row => row.roles,

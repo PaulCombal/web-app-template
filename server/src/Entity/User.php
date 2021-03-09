@@ -244,12 +244,12 @@ class User implements UserInterface
     }
 
     /**
-     * @param mixed $full_name
+     * @param mixed $fullName
      * @return User
      */
-    public function setFullName($full_name)
+    public function setFullName($fullName)
     {
-        $this->full_name = $full_name;
+        $this->fullName = $fullName;
         return $this;
     }
 
