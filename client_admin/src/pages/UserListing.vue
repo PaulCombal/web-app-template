@@ -5,6 +5,7 @@
       <div class="col">
         <OnlineTable
           :columns="columns"
+          :default-visible-columns="visible_columns"
           :actions="actions"
           title="User listing"
           url="user"
@@ -27,10 +28,10 @@ export default {
   components: {OnlineTable},
   data() {
     return {
+      visible_columns: ['ID', 'Email'],
       columns: [
         {
           name: 'ID',
-          required: true,
           label: 'User ID',
           align: 'left',
           field: row => row.id,
@@ -38,10 +39,15 @@ export default {
         },
         {
           name: 'Email',
-          required: true,
           label: 'User Email',
           field: row => row.email,
           format: val => `${val}`
+        },
+        {
+          name: 'Roles',
+          label: 'Roles',
+          field: row => row.roles,
+          format: val => `${val.join(', ')}`
         },
       ],
       actions: [
@@ -66,6 +72,16 @@ export default {
           refresh: true,
           icon: 'delete',
           tooltip: 'Delete user'
+        },
+        {
+          type: 'confirm',
+          confirm: {
+            text: 'Are you sure you want to ban this user? He will still be able to login, but the main actions will be blocked.'
+          },
+          fn: this.banUser,
+          refresh: true,
+          icon: 'gavel',
+          tooltip: 'Ban user'
         }
       ]
     }
@@ -73,6 +89,9 @@ export default {
   methods: {
     deleteUser(row) {
       return this.$axios.delete(`user/${row.id}`)
+    },
+    banUser(row) {
+      return this.$axios.put(`user/ban/${row.id}`)
     }
   }
 }

@@ -6,9 +6,39 @@
       :row-key="rowKey"
       :pagination.sync="pagination"
       :title="title"
-      @request="onRequest"
+      :visible-columns="visible_columns"
       :data="data"
+      @request="onRequest"
     >
+
+      <template v-slot:top="props">
+        <div class="col-2 q-table__title">{{ title }}</div>
+
+        <q-space/>
+
+        <q-select
+          v-model="visible_columns"
+          multiple
+          borderless
+          dense
+          options-dense
+          :display-value="$q.lang.table.columns"
+          emit-value
+          map-options
+          :options="columns"
+          option-value="name"
+          options-cover
+          style="min-width: 150px"
+        />
+
+        <!-- might work with Vue3 -->
+        <!--<q-btn
+          flat round dense
+          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          @click="props.toggleFullscreen"
+          class="q-ml-md"
+        />-->
+      </template>
 
       <template v-if="rowsExpand" v-slot:header="props">
         <q-tr :props="props">
@@ -51,14 +81,17 @@
 
     <q-dialog v-model="confirm" persistent>
       <q-card>
-        <q-card-section class="row items-center">
-          <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
-          <span class="q-ml-sm">{{ curr_action.confirm.text }}</span>
+        <q-card-section class="flex">
+          <q-avatar icon="signal_wifi_off" color="primary" text-color="white"/>
+          <div style="flex: 1" class="q-ml-sm">
+            <div>{{ curr_action.confirm.text }}</div>
+            <!-- TODO put subtext -->
+          </div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Confirm" color="primary" @click="onConfirmClickAction" v-close-popup />
+          <q-btn flat label="Cancel" color="primary" v-close-popup/>
+          <q-btn flat label="Confirm" color="primary" @click="onConfirmClickAction" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -67,6 +100,7 @@
 
 <script>
 import {Fragment} from 'vue-fragment'
+
 export default {
   name: 'OnlineTable',
   components: {Fragment},
@@ -105,6 +139,9 @@ export default {
     },
     paginationOverride: {
       type: Object
+    },
+    defaultVisibleColumns: {
+      type: Array
     }
   },
   data() {
@@ -112,9 +149,10 @@ export default {
       loading: true,
       data: [],
       confirm: false,
+      visible_columns: [],
       curr_action: {
         confirm: {
-          text:null
+          text: null
         }
       },
       curr_row: null,
@@ -182,6 +220,7 @@ export default {
       this.pagination = {...this.pagination, ...this.paginationOverride}
     }
 
+    this.visible_columns = this.defaultVisibleColumns || this.columns.map(c => c.name)
     this.onRequest({
       pagination: this.pagination
     })

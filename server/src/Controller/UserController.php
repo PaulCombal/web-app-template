@@ -38,6 +38,19 @@ class UserController extends AbstractController
 
     /**
      * @IsGranted("ROLE_ADMIN")
+     * @Route("/user/ban/{id<\d+>}", name="user_ban", methods={"PUT"})
+     * @ParamConverter("user", class="App:User")
+     */
+    public function banUser(User $user, EntityManagerInterface $em)
+    {
+        $user->setRoles(['ROLE_BANNED']);
+        $em->persist($user);
+        $em->flush();
+        return $this->json(['message' => 'OK']);
+    }
+
+    /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/user/{id<\d+>}", name="user_delete", methods={"DELETE"})
      * @ParamConverter("user", class="App:User")
      */

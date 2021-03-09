@@ -1,4 +1,3 @@
-Make users Bannable (add role_banned to user mgmt)
 FIX: fullname not saved on account creation?
 
 --> copy everything to client_owner
