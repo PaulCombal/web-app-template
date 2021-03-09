@@ -2,7 +2,7 @@
   <q-page class="q-pa-md">
     <div class="row text-center">
       <div class="col">
-        <h6>Site admin</h6>
+        <h6>Privileged area</h6>
       </div>
     </div>
     <div class="row text-center justify-center">
@@ -10,7 +10,7 @@
         <q-card>
           <q-card-section>
             <div class="text-h6">Login here</div>
-            <div class="text-subtitle2">...only if you're allowed to</div>
+            <div class="text-subtitle2">Your account must be elevated</div>
           </q-card-section>
 
           <q-separator></q-separator>

@@ -3,11 +3,9 @@ Web app boilerplate
 
 Using Quasar, Symfony 5.2.
 
-It's been a while since I touched any programming language.
+Use with caution, I'm only working on this project on my spare time.
 
 Make sure to read the README in each subdir.
-
-I included certs for a local `https://hotspotdev.me` "hosts" domain.
 
 Includes a Login with Google. Login with Apple & Microsoft in the future?
 
@@ -15,7 +13,7 @@ This repo aims to be a boilerplate for a profrssionnal website with a unified ba
 Backend also includes some logic for basic entities such as addresses and preferences, as well as basic role administration.
 
 It's a bummer, but HTTPS is turned OFF to avoid multiple errors on mobile development.
-I run my Symfony without HTTPS because my capacitors use HTTP, and you know how CORS work
+I run my Symfony without HTTPS because it is a hell to manage for local mobile development, you know how CORS work.
 
 I've made a simple start script for this, but please read it first, you'll need `tmux` and modify the command name first.
 Usage: `./start # for web pwa` or `./start cap` for android capacitor. `./start stop` to stop the docker database.
@@ -27,10 +25,10 @@ Works for:
 * [x] Android (capacitor)
 * [ ] iOS (capacitor) (not tomorrow, I don't have an iPhone)
 
-Quick starter pack:
+Quick starter pack, if you're not using the start script:
 * `$ quasar dev -m pwa`
 * `$ docker run --name=my_postgres --env=POSTGRES_PASSWORD=testapp123 --volume=my_dbdata:/var/lib/postgresql/data -p 54320:5432 postgres`
-* `$ symfony server:start --p12=../certs/Cert.p12`
+* `$ symfony server:start`
 
 There are 3 clients for one backend:
 * user client
@@ -39,10 +37,9 @@ There are 3 clients for one backend:
 
 ❤️ to symfony & quasar teams for the cool frameworks!
 
-I use this repo for myself but if anyone wants to use it or whatever please feel free 
-to ask me anything.
+I use this repo for myself but if anyone wants to use it or whatever please feel free to ask me anything.
 
-Owner and admin frontend will only support pwa mode (no capacitor). Google auth is specific to these two modes.
+Owner and admin frontend will only support pwa mode (no capacitor).
 
 ### Setup for dummies
 

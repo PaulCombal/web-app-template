@@ -1,5 +1,3 @@
-import {Platform} from "quasar";
-
 const LOGIN_ROUTE_GOOGLE = 'login/google/check_token'
 const LOGOUT_ROUTE_ALL = 'logout'
 
@@ -113,6 +111,7 @@ export function resume_login(state) {
 }
 
 export function logout(state) {
+  this.$router.push('/login')
   localStorage.removeItem('user')
   localStorage.removeItem('last_op')
   state.commit('setUser', null)

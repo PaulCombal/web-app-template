@@ -1,2 +1,0 @@
---> copy everything to client_owner
-Make sure owner logins with ROLE_OWNER
