@@ -1,6 +1,6 @@
-# App for site admins (client_admin)
+# App for site owners
 
-Only for the ones above the others
+For moderators / privileged users
 
 ## Install the dependencies
 ```bash
