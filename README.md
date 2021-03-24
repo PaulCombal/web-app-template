@@ -9,7 +9,7 @@ Make sure to read the README in each subdir.
 
 Includes a Login with Google. Login with Apple & Microsoft in the future?
 
-This repo aims to be a boilerplate for a profrssionnal website with a unified backend, and separate webapps for users, "moderators" or whatever you want it to be, and admins.
+This repo aims to be a boilerplate for a professional website with a unified backend, and separate webapps for users, "moderators" or whatever you want it to be, and admins.
 Backend also includes some logic for basic entities such as addresses and preferences, as well as basic role administration.
 
 It's a bummer, but HTTPS is turned OFF to avoid multiple errors on mobile development.
@@ -50,6 +50,15 @@ In client:
 
 In server: 
 * make .env.local
+
+### TODO list
+
+* [ ] Write a proper documentation on what it does
+* [ ] Make sure it works in the first place
+* [ ] Replace annotations with attributes as much as possible
+* [ ] Make a proper controller with CRUD for easy copy-paste
+* [ ] Explain the symlinks thing
+* [ ] Visuals & screenshots on this README
 
 ### License
 

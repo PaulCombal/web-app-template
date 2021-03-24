@@ -14,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProfileController extends AbstractController
 {
-    /**
-     * @Route("/profile", name="my_profile", methods={"GET"})
-     */
+    #[Route('/profile', name: 'my_profile', methods: ['GET'])]
     public function myProfile()
     {
         return $this->json((array)$this->getUser());
